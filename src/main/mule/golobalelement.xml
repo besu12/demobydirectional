@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="ada52941-b0a0-4dda-b406-69ad1cb77589" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
+	</db:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="0e387c29-cbf7-46bb-aa2f-4ec9bd3aee6a" file="config.yaml" />
+	<db:config name="Database_Config1" doc:name="Database Config" doc:id="f37483bc-23c1-4945-aa4e-0644a631e008" >
+		<db:mssql-connection host="${db1.host}" instanceName="${db1.instance}" port="${db1.port}" user="${db1.user}" password="${db1.password}" databaseName="${db1.database}" />
+	</db:config>
+	<db:config name="Database_Config2" doc:name="Database Config" doc:id="12b3c619-58c6-4763-a511-59a4ec75ce8f" >
+		<db:oracle-connection host="${db2.host}" port="${db2.port}" user="${db2.user}" password="${db2.password}" instance="${db2.instance}" />
+	</db:config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="837faa4c-ccce-4b53-84b0-6ecfeba5cf8d" >
+		<salesforce:basic-connection username="${sfdc.username}" password="${sfdc.password}" securityToken="${sfdc.token}" />
+	</salesforce:sfdc-config>
+</mule>

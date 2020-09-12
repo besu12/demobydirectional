@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="3796661f-9eeb-401a-861b-0881111cad37" >
+		<jms:active-mq-connection username="admin " password="admin" >
+			<jms:factory-configuration brokerUrl="tcp://DESKTOP-K76MN4R:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="demobydirectionalFlow" doc:id="5688a34f-05ad-4fcf-afb1-53f77ff4faab" >
+		<db:listener table="product" doc:name="On Table Row" doc:id="a1c045e5-a165-4111-9a56-63af45c94705" config-ref="Database_Config" watermarkColumn="id" idColumn="id">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</db:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="733e4273-990d-49a7-81b4-be70a3eae023" />
+		<jms:publish doc:name="Publish" doc:id="51c511ce-731a-471e-9806-4ff142353694" config-ref="JMS_Config" destination="testing2" destinationType="TOPIC"/>
+	</flow>
+	<flow name="MicrosoftSQl" doc:id="89cc815a-f78c-4736-9751-a0107675b395" >
+		<jms:listener doc:name="Listener" doc:id="8d776a23-0d86-4237-a8d6-2eb9bb8734bc" config-ref="JMS_Config" destination="testing2" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:topic-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<db:insert doc:name="Insert" doc:id="3b629f76-0caf-43ee-adf0-662f9561c33e" config-ref="Database_Config1">
+			<db:sql ><![CDATA[insert into product2 values(:id,:product_name,:price,:qulity,:quantity)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id:payload.id,
+	product_name:payload.product_name,
+	price:payload.price,
+	qulity:payload.qulity,
+	quantity:payload.quantity
+}]]]></db:input-parameters>
+		</db:insert>
+	</flow>
+	<flow name="demobydirectionalFlow1" doc:id="7f376298-d87d-4b33-bcaf-cc15d7a5faec" >
+		<jms:listener doc:name="Listener" doc:id="2a644261-fe47-479b-a87c-a45e984c1a41" config-ref="JMS_Config" destination="testing2" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:topic-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<ee:transform doc:name="Transform Message" doc:id="81316475-2bbb-4109-b51a-71f7c2fc2d0a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="product__c" doc:name="Create" doc:id="5e4f16dc-26e8-43b5-8ded-9118ac5f4a3c" config-ref="Salesforce_Config"/>
+	</flow>
+	<flow name="orcale" doc:id="7c2a49c7-80b4-48bd-a6c3-659d991d2314" >
+		<jms:listener doc:name="Listener" doc:id="b8a0c194-29cb-417a-a0ce-e3bf7431f29a" config-ref="JMS_Config" destination="testing2" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:topic-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<db:insert doc:name="Insert" doc:id="f504eaab-0d39-4029-a896-4ea0956db6b7" config-ref="Database_Config2">
+			<db:sql ><![CDATA[insert into product1 values(:Id,:Product_name,:price,:qulity,:quantity)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	Id:payload.Id,
+	Product_name:payload.Product_name,
+	price:payload.price,
+	qulity:payload.qulity,
+	quantity:payload.quantity
+}]]]></db:input-parameters>
+		</db:insert>
+	</flow>
+</mule>

@@ -1,0 +1,23 @@
+db:
+  host: "localhost"
+  port: "3306"
+  user: "root"
+  password: "Liyat&b12"
+  database: "besu"
+db1:
+  host: "localhost"
+  instance: "BESU12"
+  port: "1433"
+  user: "Besu12"
+  password: "Liyat&b19"
+  database: "besu"
+db2:
+  host: "localhost"
+  port: "1521"
+  user: "system"
+  password: "Liyat$b12"
+  instance: "orcl1"
+sfdc:
+  username: "besufikad@thiotec.com"
+  password: "Besu&liyat19"
+  token: "iqaokb02YZjJCTk6Zg9djWzZ"
